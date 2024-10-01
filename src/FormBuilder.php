@@ -1259,7 +1259,7 @@ class FormBuilder
      *
      * @return string
      */
-    public function getIdAttribute(string $name, $attributes): string
+    public function getIdAttribute(string $name, $attributes)
     {
         if (array_key_exists('id', $attributes)) {
             return $attributes['id'];
