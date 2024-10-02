@@ -22,7 +22,7 @@ class HtmlServiceProvider extends ServiceProvider implements DeferrableProvider
      *
      * @return void
      */
-    public function register()
+    public function register(): void
     {
         $this->registerHtmlBuilder();
 
@@ -65,7 +65,7 @@ class HtmlServiceProvider extends ServiceProvider implements DeferrableProvider
      *
      * @return void
      */
-    protected function registerBladeDirectives()
+    protected function registerBladeDirectives(): void
     {
         $this->app->afterResolving('blade.compiler', function (BladeCompiler $bladeCompiler) {
             $namespaces = [
@@ -93,7 +93,7 @@ class HtmlServiceProvider extends ServiceProvider implements DeferrableProvider
      *
      * @return array
      */
-    public function provides()
+    public function provides(): array
     {
         return ['html', 'form', HtmlBuilder::class, FormBuilder::class];
     }

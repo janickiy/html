@@ -12,7 +12,7 @@ if (! function_exists('link_to')) {
      *
      * @return \Illuminate\Support\HtmlString
      */
-    function link_to($url, ?string $title = null, array $attributes = [], $secure = null, bool $escape = true)
+    function link_to(string $url, ?string $title = null, array $attributes = [], $secure = null, bool $escape = true)
     {
         return app('html')->link($url, $title, $attributes, $secure, $escape);
     }

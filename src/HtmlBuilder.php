@@ -150,7 +150,7 @@ class HtmlBuilder
      *
      * @return \Illuminate\Support\HtmlString
      */
-    public function link(string $url, $title = null, array $attributes = [], $secure = null, bool $escape = true)
+    public function link(string $url, ?string $title = null, array $attributes = [], $secure = null, bool $escape = true)
     {
         $url = $this->url->to($url, [], $secure);
 
@@ -173,9 +173,9 @@ class HtmlBuilder
      * @param array $attributes
      * @param bool $escape
      *
-     * @return \Illuminate\Support\HtmlString
+     * @return HtmlString
      */
-    public function secureLink(string $url, ?string $title = null, array $attributes = [], $escape = true)
+    public function secureLink(string $url, ?string $title = null, array $attributes = [], $escape = true): HtmlString
     {
         return $this->link($url, $title, $attributes, true, $escape);
     }
@@ -189,7 +189,7 @@ class HtmlBuilder
      * @param bool $secure
      * @param bool $escape
      *
-     * @return \Illuminate\Support\HtmlString
+     * @return HtmlString
      */
     public function linkAsset(string $url, ?string $title = null, array $attributes = [], $secure = null, bool $escape = true): HtmlString
     {
@@ -223,7 +223,7 @@ class HtmlBuilder
      * @param bool $secure
      * @param bool $escape
      *
-     * @return \Illuminate\Support\HtmlString
+     * @return HtmlString
      */
     public function linkRoute(string $name, ?string $title = null, array $parameters = [], array $attributes = [], $secure = null, bool $escape = true): HtmlString
     {
@@ -257,7 +257,7 @@ class HtmlBuilder
      *
      * @return \Illuminate\Support\HtmlString
      */
-    public function mailto(string $email, ?string $title = null, array $attributes = [], $escape = true): HtmlString
+    public function mailto(string $email, ?string $title = null, array $attributes = [], bool $escape = true): HtmlString
     {
         $email = $this->email($email);
 
@@ -304,7 +304,7 @@ class HtmlBuilder
      *
      * @return \Illuminate\Support\HtmlString|string
      */
-    public function ol($list, array $attributes = [])
+    public function ol(array $list, array $attributes = [])
     {
         return $this->listing('ol', $list, $attributes);
     }
@@ -317,7 +317,7 @@ class HtmlBuilder
      *
      * @return \Illuminate\Support\HtmlString|string
      */
-    public function ul($list, array $attributes = [])
+    public function ul(array $list, array $attributes = [])
     {
         return $this->listing('ul', $list, $attributes);
     }
@@ -389,7 +389,7 @@ class HtmlBuilder
      *
      * @return string
      */
-    protected function listingElement($key, $type, $value)
+    protected function listingElement(mixed $key, string $type, mixed $value)
     {
         if (is_array($value)) {
             return $this->nestedListing($key, $type, $value);
@@ -407,7 +407,7 @@ class HtmlBuilder
      *
      * @return string
      */
-    protected function nestedListing($key, $type, $value)
+    protected function nestedListing(mixed $key, string $type, mixed $value)
     {
         if (is_int($key)) {
             return $this->listing($type, $value);
@@ -423,7 +423,7 @@ class HtmlBuilder
      *
      * @return string
      */
-    public function attributes($attributes)
+    public function attributes($attributes): string
     {
         $html = [];
 
@@ -438,15 +438,15 @@ class HtmlBuilder
         return count($html) > 0 ? ' ' . implode(' ', $html) : '';
     }
 
+
     /**
      * Build a single attribute element.
      *
-     * @param string $key
-     * @param string $value
-     *
-     * @return string
+     * @param mixed $key
+     * @param mixed $value
+     * @return mixed|string|void
      */
-    protected function attributeElement(string $key, string $value)
+    protected function attributeElement(mixed $key, mixed $value)
     {
         // For numeric keys we will assume that the value is a boolean attribute
         // where the presence of the attribute represents a true value and the
@@ -516,7 +516,7 @@ class HtmlBuilder
      *
      * @return \Illuminate\Support\HtmlString
      */
-    public function meta(string $name, string $content, array $attributes = []): HtmlString
+    public function meta(string $name, mixed $content, array $attributes = []): HtmlString
     {
         $defaults = compact('name', 'content');
 
@@ -532,9 +532,9 @@ class HtmlBuilder
      * @param mixed $content
      * @param array $attributes
      *
-     * @return \Illuminate\Support\HtmlString
+     * @return HtmlString
      */
-    public function tag(string $tag, $content, array $attributes = []): HtmlString
+    public function tag(string $tag, mixed $content, array $attributes = []): HtmlString
     {
         $content = is_array($content) ? implode('', $content) : $content;
         return $this->toHtmlString('<' . $tag . $this->attributes($attributes) . '>' . $this->toHtmlString($content) . '</' . $tag . '>');
@@ -547,7 +547,7 @@ class HtmlBuilder
      *
      * @return \Illuminate\Support\HtmlString
      */
-    protected function toHtmlString($html)
+    protected function toHtmlString($html): HtmlString
     {
         return new HtmlString($html);
     }

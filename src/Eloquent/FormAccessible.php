@@ -20,7 +20,7 @@ trait FormAccessible
      * @param string $key
      * @return mixed
      */
-    public function getFormValue(string $key)
+    public function getFormValue(mixed $key)
     {
         $value = $this->getAttributeFromArray($key);
 
@@ -57,16 +57,16 @@ trait FormAccessible
 
         // No form mutator, let the model resolve this
         return data_get($this, $key);
+
     }
 
     /**
      * Check for a nested model.
      *
-     * @param string $key
-     *
+     * @param mixed $key
      * @return bool
      */
-    public function isNestedModel(string $key)
+    public function isNestedModel(mixed $key)
     {
         return in_array($key, array_keys($this->getRelations()));
     }
@@ -76,7 +76,7 @@ trait FormAccessible
      *
      * @return bool
      */
-    public function hasFormMutator($key): bool
+    public function hasFormMutator(mixed $key): bool
     {
         $methods = $this->getReflection()->getMethods(ReflectionMethod::IS_PUBLIC);
 
@@ -94,7 +94,7 @@ trait FormAccessible
      *
      * @return mixed
      */
-    private function mutateFormAttribute(string $key, string $value)
+    private function mutateFormAttribute(string $key, ?string $value)
     {
         return $this->{'form' . Str::studly($key) . 'Attribute'}($value);
     }

@@ -179,7 +179,7 @@ class FormBuilder
      *
      * @return \Illuminate\Support\HtmlString
      */
-    public function model($model, array $options = []): HtmlString
+    public function model(mixed $model, array $options = []): HtmlString
     {
         $this->model = $model;
 
@@ -193,7 +193,7 @@ class FormBuilder
      *
      * @return void
      */
-    public function setModel($model): void
+    public function setModel(miex $model): void
     {
         $this->model = $model;
     }
@@ -243,7 +243,7 @@ class FormBuilder
      * @param bool $escape_html
      * @return HtmlString
      */
-    public function label(string $name, ?string $value = null, array $options = [], bool $escape_html = true): HtmlString
+    public function label(?string $name, ?string $value = null, array $options = [], bool $escape_html = true): HtmlString
     {
         $this->labels[] = $name;
 
@@ -265,7 +265,7 @@ class FormBuilder
      * @param string|null $value
      * @return string
      */
-    protected function formatLabel(string $name, ?string $value): string
+    protected function formatLabel(?string $name, ?string $value): string
     {
         return $value ?: ucwords(str_replace('_', ' ', $name));
     }
@@ -279,7 +279,7 @@ class FormBuilder
      * @param array $options
      * @return HtmlString
      */
-    public function input(string $type, string $name, ?string $value = null, array $options = []): HtmlString
+    public function input(?string $type, ?string $name, ?string $value = null, array $options = []): HtmlString
     {
         $this->type = $type;
 
@@ -314,7 +314,7 @@ class FormBuilder
      * @param array $options
      * @return HtmlString
      */
-    public function text(string $name, ?string $value = null, array $options = []): HtmlString
+    public function text(?string $name, ?string $value = null, array $options = []): HtmlString
     {
         return $this->input('text', $name, $value, $options);
     }
@@ -326,7 +326,7 @@ class FormBuilder
      * @param array $options
      * @return HtmlString
      */
-    public function password(string $name, array $options = []): HtmlString
+    public function password(?string $name, array $options = []): HtmlString
     {
         return $this->input('password', $name, '', $options);
     }
@@ -339,7 +339,7 @@ class FormBuilder
      * @param array $options
      * @return HtmlString
      */
-    public function range(string $name, ?string $value = null, array $options = []): HtmlString
+    public function range(?string $name, ?string $value = null, array $options = []): HtmlString
     {
         return $this->input('range', $name, $value, $options);
     }
@@ -352,7 +352,7 @@ class FormBuilder
      * @param array $options
      * @return HtmlString
      */
-    public function hidden(string $name, ?string $value = null, array $options = []): HtmlString
+    public function hidden(?string $name, ?string $value = null, array $options = []): HtmlString
     {
         return $this->input('hidden', $name, $value, $options);
     }
@@ -366,7 +366,7 @@ class FormBuilder
      *
      * @return \Illuminate\Support\HtmlString
      */
-    public function search($name, $value = null, array $options = [])
+    public function search(?string $name, ?string $value = null, array $options = [])
     {
         return $this->input('search', $name, $value, $options);
     }
@@ -380,7 +380,7 @@ class FormBuilder
      *
      * @return \Illuminate\Support\HtmlString
      */
-    public function email($name, ?string $value = null, array $options = [])
+    public function email(?string $name, ?string $value = null, array $options = [])
     {
         return $this->input('email', $name, $value, $options);
     }
@@ -394,7 +394,7 @@ class FormBuilder
      *
      * @return \Illuminate\Support\HtmlString
      */
-    public function tel($name, ?string $value = null, array $options = [])
+    public function tel(?string $name, ?string $value = null, array $options = [])
     {
         return $this->input('tel', $name, $value, $options);
     }
@@ -408,7 +408,7 @@ class FormBuilder
      *
      * @return \Illuminate\Support\HtmlString
      */
-    public function number($name, ?string $value = null, array $options = [])
+    public function number(?string $name, ?string $value = null, array $options = [])
     {
         return $this->input('number', $name, $value, $options);
     }
@@ -422,7 +422,7 @@ class FormBuilder
      *
      * @return \Illuminate\Support\HtmlString
      */
-    public function date($name, ?string $value = null, array $options = [])
+    public function date(?string $name, ?string $value = null, array $options = [])
     {
         if ($value instanceof DateTime) {
             $value = $value->format('Y-m-d');
@@ -440,7 +440,7 @@ class FormBuilder
      *
      * @return \Illuminate\Support\HtmlString
      */
-    public function datetime($name, ?string $value = null, array $options = [])
+    public function datetime(?string $name, ?string $value = null, array $options = [])
     {
         if ($value instanceof DateTime) {
             $value = $value->format(DateTime::RFC3339);
@@ -458,7 +458,7 @@ class FormBuilder
      *
      * @return \Illuminate\Support\HtmlString
      */
-    public function datetimeLocal($name, ?string $value = null, array $options = [])
+    public function datetimeLocal(?string $name, ?string $value = null, array $options = [])
     {
         if ($value instanceof DateTime) {
             $value = $value->format('Y-m-d\TH:i');
@@ -476,7 +476,7 @@ class FormBuilder
      *
      * @return \Illuminate\Support\HtmlString
      */
-    public function time($name, ?string $value = null, array $options = [])
+    public function time(?string $name, ?string $value = null, array $options = [])
     {
         if ($value instanceof DateTime) {
             $value = $value->format('H:i');
@@ -494,7 +494,7 @@ class FormBuilder
      *
      * @return \Illuminate\Support\HtmlString
      */
-    public function url($name, ?string $value = null, array $options = [])
+    public function url(?string $name, ?string $value = null, array $options = [])
     {
         return $this->input('url', $name, $value, $options);
     }
@@ -508,7 +508,7 @@ class FormBuilder
      *
      * @return \Illuminate\Support\HtmlString
      */
-    public function week($name, ?string $value = null, array $options = [])
+    public function week(?string $name, ?string $value = null, array $options = [])
     {
         if ($value instanceof DateTime) {
             $value = $value->format('Y-\WW');
@@ -525,7 +525,7 @@ class FormBuilder
      *
      * @return \Illuminate\Support\HtmlString
      */
-    public function file($name, array $options = [])
+    public function file(?string $name, array $options = [])
     {
         return $this->input('file', $name, null, $options);
     }
@@ -539,7 +539,7 @@ class FormBuilder
      *
      * @return \Illuminate\Support\HtmlString
      */
-    public function textarea($name, ?string $value = null, array $options = [])
+    public function textarea(?string $name, ?string $value = null, array $options = [])
     {
         $this->type = 'textarea';
 
@@ -573,7 +573,7 @@ class FormBuilder
      *
      * @return array
      */
-    protected function setTextAreaSize($options)
+    protected function setTextAreaSize(array $options): array
     {
         if (isset($options['size'])) {
             return $this->setQuickTextAreaSize($options);
@@ -583,7 +583,6 @@ class FormBuilder
         // columns and rows attributes, using sane defaults if these do not exist on
         // the attributes array. We'll then return this entire options array back.
         $cols = Arr::get($options, 'cols', 50);
-
         $rows = Arr::get($options, 'rows', 10);
 
         return array_merge($options, compact('cols', 'rows'));
@@ -616,8 +615,8 @@ class FormBuilder
      * @return \Illuminate\Support\HtmlString
      */
     public function select(
-        $name,
-        $list = [],
+        string $name,
+        array $list = [],
         $selected = null,
         array $selectAttributes = [],
         array $optionsAttributes = [],
@@ -674,7 +673,7 @@ class FormBuilder
      *
      * @return \Illuminate\Support\HtmlString
      */
-    public function selectRange($name, $begin, $end, $selected = null, array $options = [])
+    public function selectRange(string $name, $begin, $end, $selected = null, array $options = [])
     {
         $range = array_combine($range = range($begin, $end), $range);
 
@@ -707,7 +706,7 @@ class FormBuilder
      *
      * @return \Illuminate\Support\HtmlString
      */
-    public function selectMonth($name, $selected = null, array $options = [], $format = '%B')
+    public function selectMonth(?string $name, $selected = null, array $options = [], string $format = '%B')
     {
         $months = [];
 
@@ -750,7 +749,7 @@ class FormBuilder
      *
      * @return \Illuminate\Support\HtmlString
      */
-    protected function optionGroup($list, $label, $selected, array $attributes = [], array $optionsAttributes = [], $level = 0)
+    protected function optionGroup($list, $label, $selected, array $attributes = [], array $optionsAttributes = [], int $level = 0)
     {
         $html = [];
         $space = str_repeat("&nbsp;", $level);
@@ -817,7 +816,7 @@ class FormBuilder
      *
      * @return null|string
      */
-    protected function getSelectedValue(string $value, string $selected)
+    protected function getSelectedValue(?string $value, mixed $selected)
     {
         if (is_array($selected)) {
             return in_array($value, $selected, true) || in_array((string)$value, $selected, true) ? 'selected' : null;
@@ -840,7 +839,7 @@ class FormBuilder
      *
      * @return \Illuminate\Support\HtmlString
      */
-    public function checkbox(string $name, $value = 1, $checked = null, array $options = [])
+    public function checkbox(?string $name, int $value = 1, $checked = null, array $options = [])
     {
         return $this->checkable('checkbox', $name, $value, $checked, $options);
     }
@@ -855,7 +854,7 @@ class FormBuilder
      *
      * @return \Illuminate\Support\HtmlString
      */
-    public function radio($name, ?string $value = null, $checked = null, array $options = [])
+    public function radio(?string $name, ?string $value = null, $checked = null, array $options = [])
     {
         if (is_null($value)) {
             $value = $name;
@@ -953,7 +952,7 @@ class FormBuilder
      *
      * @return bool
      */
-    protected function getRadioCheckedState($name, $value, $checked)
+    protected function getRadioCheckedState(string $name, ?string $value, $checked): bool
     {
         $request = $this->request($name);
 
@@ -973,7 +972,7 @@ class FormBuilder
      * @param string $value
      * @return bool
      */
-    protected function compareValues(string $name, string $value)
+    protected function compareValues(string $name, ?string $value)
     {
         return $this->getValueAttribute($name) == $value;
     }
@@ -998,7 +997,7 @@ class FormBuilder
      *
      * @return \Illuminate\Support\HtmlString
      */
-    public function reset($value, $attributes = [])
+    public function reset(?string $value, array $attributes = [])
     {
         return $this->input('reset', null, $value, $attributes);
     }
@@ -1012,7 +1011,7 @@ class FormBuilder
      *
      * @return \Illuminate\Support\HtmlString
      */
-    public function image($url, $name = null, $attributes = [])
+    public function image(string $url, ?string $name = null, array $attributes = [])
     {
         $attributes['src'] = $this->url->asset($url);
 
@@ -1028,7 +1027,7 @@ class FormBuilder
      *
      * @return \Illuminate\Support\HtmlString
      */
-    public function month($name, ?string $value = null, array $options = [])
+    public function month(string $name, ?string $value = null, array $options = [])
     {
         if ($value instanceof DateTime) {
             $value = $value->format('Y-m');
@@ -1046,7 +1045,7 @@ class FormBuilder
      *
      * @return \Illuminate\Support\HtmlString
      */
-    public function color($name, ?string $value = null, array $options = [])
+    public function color(string $name, ?string $value = null, array $options = [])
     {
         return $this->input('color', $name, $value, $options);
     }
@@ -1176,7 +1175,7 @@ class FormBuilder
      *
      * @return string
      */
-    protected function getUrlAction($options)
+    protected function getUrlAction(mixed $options)
     {
         if (is_array($options)) {
             return $this->url->to($options[0], array_slice($options, 1));
@@ -1192,7 +1191,7 @@ class FormBuilder
      *
      * @return string
      */
-    protected function getRouteAction($options)
+    protected function getRouteAction(mixed $options)
     {
         if (is_array($options)) {
             $parameters = array_slice($options, 1);
@@ -1214,7 +1213,7 @@ class FormBuilder
      *
      * @return string
      */
-    protected function getControllerAction($options): string
+    protected function getControllerAction(mixed $options): string
     {
         if (is_array($options)) {
             return $this->url->action($options[0], array_slice($options, 1));
@@ -1230,7 +1229,7 @@ class FormBuilder
      *
      * @return string
      */
-    protected function getAppendage($method): string
+    protected function getAppendage(mixed $method): string
     {
         list($method, $appendage) = [strtoupper($method), ''];
 
@@ -1259,7 +1258,7 @@ class FormBuilder
      *
      * @return string
      */
-    public function getIdAttribute(string $name, $attributes)
+    public function getIdAttribute(?string $name, array $attributes)
     {
         if (array_key_exists('id', $attributes)) {
             return $attributes['id'];
@@ -1278,7 +1277,7 @@ class FormBuilder
      *
      * @return mixed
      */
-    public function getValueAttribute(string $name, ?string $value = null)
+    public function getValueAttribute(?string $name, ?string $value = null)
     {
         if (is_null($name)) {
             return $value;
@@ -1332,7 +1331,7 @@ class FormBuilder
      * @param $name
      * @return array|null|string
      */
-    protected function request($name)
+    protected function request(string $name)
     {
         if (!$this->considerRequest) {
             return null;
@@ -1352,7 +1351,7 @@ class FormBuilder
      *
      * @return mixed
      */
-    protected function getModelValueAttribute($name)
+    protected function getModelValueAttribute(string $name)
     {
         $key = $this->transformKey($name);
 
@@ -1370,7 +1369,7 @@ class FormBuilder
      *
      * @return mixed
      */
-    public function old($name)
+    public function old(string $name)
     {
         if (isset($this->session)) {
             $key = $this->transformKey($name);
@@ -1424,7 +1423,7 @@ class FormBuilder
      *
      * @return \Illuminate\Support\HtmlString
      */
-    protected function toHtmlString($html)
+    protected function toHtmlString(?string $html)
     {
         return new HtmlString($html);
     }
