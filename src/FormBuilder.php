@@ -920,7 +920,7 @@ class FormBuilder
      *
      * @return bool
      */
-    protected function getCheckboxCheckedState($name, $value, $checked): bool
+    protected function getCheckboxCheckedState($name, $value, $checked): bool|null
     {
         $request = $this->request($name);
 
@@ -952,7 +952,7 @@ class FormBuilder
      *
      * @return bool
      */
-    protected function getRadioCheckedState(string $name, ?string $value, $checked): bool
+    protected function getRadioCheckedState(string $name, ?string $value, $checked): bool|null
     {
         $request = $this->request($name);
 
