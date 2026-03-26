@@ -193,7 +193,7 @@ class FormBuilder
      *
      * @return void
      */
-    public function setModel(miex $model): void
+    public function setModel(mixed $model): void
     {
         $this->model = $model;
     }
@@ -494,7 +494,7 @@ class FormBuilder
      *
      * @return \Illuminate\Support\HtmlString
      */
-    public function url(?string $name, ?string $value = null, array $options = [])
+    public function url(?string $name, ?string $value = null, array $options = []): HtmlString
     {
         return $this->input('url', $name, $value, $options);
     }
@@ -508,7 +508,7 @@ class FormBuilder
      *
      * @return \Illuminate\Support\HtmlString
      */
-    public function week(?string $name, ?string $value = null, array $options = [])
+    public function week(?string $name, ?string $value = null, array $options = []): HtmlString
     {
         if ($value instanceof DateTime) {
             $value = $value->format('Y-\WW');
@@ -595,7 +595,7 @@ class FormBuilder
      *
      * @return array
      */
-    protected function setQuickTextAreaSize($options)
+    protected function setQuickTextAreaSize(array $options): array
     {
         $segments = explode('x', $options['size']);
 
@@ -617,7 +617,7 @@ class FormBuilder
     public function select(
         string $name,
         array $list = [],
-        $selected = null,
+               $selected = null,
         array $selectAttributes = [],
         array $optionsAttributes = [],
         array $optgroupsAttributes = []
@@ -673,7 +673,7 @@ class FormBuilder
      *
      * @return \Illuminate\Support\HtmlString
      */
-    public function selectRange(string $name, $begin, $end, $selected = null, array $options = [])
+    public function selectRange(?string $name, ?string $begin, ?string $end, mixed $selected = null, array $options = []): HtmlString
     {
         $range = array_combine($range = range($begin, $end), $range);
 
@@ -691,7 +691,7 @@ class FormBuilder
      *
      * @return mixed
      */
-    public function selectYear()
+    public function selectYear(): mixed
     {
         return call_user_func_array([$this, 'selectRange'], func_get_args());
     }
@@ -706,7 +706,7 @@ class FormBuilder
      *
      * @return \Illuminate\Support\HtmlString
      */
-    public function selectMonth(?string $name, $selected = null, array $options = [], string $format = '%B')
+    public function selectMonth(?string $name, ?string $selected = null, array $options = [], string $format = '%B'): HtmlString
     {
         $months = [];
 
@@ -728,7 +728,7 @@ class FormBuilder
      *
      * @return \Illuminate\Support\HtmlString
      */
-    public function getSelectOption($display, $value, $selected, array $attributes = [], array $optgroupAttributes = [])
+    public function getSelectOption(string $display, ?string $value, mixed $selected, array $attributes = [], array $optgroupAttributes = []): HtmlString
     {
         if (is_iterable($display)) {
             return $this->optionGroup($display, $value, $selected, $optgroupAttributes, $attributes);
@@ -749,7 +749,7 @@ class FormBuilder
      *
      * @return \Illuminate\Support\HtmlString
      */
-    protected function optionGroup($list, $label, $selected, array $attributes = [], array $optionsAttributes = [], int $level = 0)
+    protected function optionGroup(array $list, string $label, mixed $selected, array $attributes = [], array $optionsAttributes = [], int $level = 0): HtmlString
     {
         $html = [];
         $space = str_repeat("&nbsp;", $level);
@@ -772,9 +772,9 @@ class FormBuilder
      * @param string $selected
      * @param array $attributes
      *
-     * @return \Illuminate\Support\HtmlString
+     * @return \Illuminate\Support\
      */
-    protected function option($display, $value, $selected, array $attributes = [])
+    protected function option(string $display, ?string $value, mixed $selected, array $attributes = []): HtmlString
     {
         $selected = $this->getSelectedValue($value, $selected);
 
@@ -796,7 +796,7 @@ class FormBuilder
      *
      * @return \Illuminate\Support\HtmlString
      */
-    protected function placeholderOption($display, $selected)
+    protected function placeholderOption($display, $selected): HtmlString
     {
         $selected = $this->getSelectedValue(null, $selected);
 
@@ -839,7 +839,7 @@ class FormBuilder
      *
      * @return \Illuminate\Support\HtmlString
      */
-    public function checkbox(?string $name, int $value = 1, $checked = null, array $options = [])
+    public function checkbox(?string $name, int $value = 1, $checked = null, array $options = []): HtmlString
     {
         return $this->checkable('checkbox', $name, $value, $checked, $options);
     }
@@ -854,7 +854,7 @@ class FormBuilder
      *
      * @return \Illuminate\Support\HtmlString
      */
-    public function radio(?string $name, ?string $value = null, $checked = null, array $options = [])
+    public function radio(?string $name, ?string $value = null, $checked = null, array $options = []): HtmlString
     {
         if (is_null($value)) {
             $value = $name;
@@ -874,7 +874,7 @@ class FormBuilder
      *
      * @return \Illuminate\Support\HtmlString
      */
-    protected function checkable($type, $name, $value, $checked, $options)
+    protected function checkable(string $type, ?string $name, mixed $value, bool $checked, array $options = []): HtmlString
     {
         $this->type = $type;
 
@@ -897,7 +897,7 @@ class FormBuilder
      *
      * @return bool
      */
-    protected function getCheckedState(string $type, string $name, $value, $checked)
+    protected function getCheckedState(string $type, string $name, mixed $value, bool $checked)
     {
         switch ($type) {
             case 'checkbox':
@@ -920,7 +920,7 @@ class FormBuilder
      *
      * @return bool
      */
-    protected function getCheckboxCheckedState($name, $value, $checked): bool|null
+    protected function getCheckboxCheckedState(string $name, mixed $value, bool $checked): bool|null
     {
         $request = $this->request($name);
 
@@ -1011,7 +1011,7 @@ class FormBuilder
      *
      * @return \Illuminate\Support\HtmlString
      */
-    public function image(string $url, ?string $name = null, array $attributes = [])
+    public function image(string $url, ?string $name = null, array $attributes = []): HtmlString
     {
         $attributes['src'] = $this->url->asset($url);
 
@@ -1088,7 +1088,7 @@ class FormBuilder
      *
      * @return \Illuminate\Support\HtmlString
      */
-    public function datalist($id, array $list = [])
+    public function datalist(string $id, array $list = []): HtmlString
     {
         $this->type = 'datalist';
 
@@ -1131,7 +1131,7 @@ class FormBuilder
      *
      * @return string
      */
-    protected function getMethod($method): string
+    protected function getMethod(string $method): string
     {
         $method = strtoupper($method);
 
@@ -1175,7 +1175,7 @@ class FormBuilder
      *
      * @return string
      */
-    protected function getUrlAction(mixed $options)
+    protected function getUrlAction(array|string $options): string
     {
         if (is_array($options)) {
             return $this->url->to($options[0], array_slice($options, 1));
@@ -1191,7 +1191,7 @@ class FormBuilder
      *
      * @return string
      */
-    protected function getRouteAction(mixed $options)
+    protected function getRouteAction(mixed $options): string
     {
         if (is_array($options)) {
             $parameters = array_slice($options, 1);
@@ -1277,7 +1277,7 @@ class FormBuilder
      *
      * @return mixed
      */
-    public function getValueAttribute(?string $name, ?string $value = null)
+    public function getValueAttribute(?string $name, mixed $value = null)
     {
         if (is_null($name)) {
             return $value;

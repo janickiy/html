@@ -90,7 +90,7 @@ class HtmlBuilder
      *
      * @return \Illuminate\Support\HtmlString
      */
-    public function style(string $url, array $attributes = [], $secure = null)
+    public function style(string $url, array $attributes = [], $secure = null): HtmlString
     {
         $defaults = ['media' => 'all', 'type' => 'text/css', 'rel' => 'stylesheet'];
 
@@ -111,7 +111,7 @@ class HtmlBuilder
      *
      * @return \Illuminate\Support\HtmlString
      */
-    public function image(string $url, ?string $alt = null, array $attributes = [], $secure = null)
+    public function image(string $url, ?string $alt = null, array $attributes = [], $secure = null): HtmlString
     {
         $attributes['alt'] = $alt;
 
@@ -128,7 +128,7 @@ class HtmlBuilder
      *
      * @return \Illuminate\Support\HtmlString
      */
-    public function favicon(string $url, array $attributes = [], $secure = null)
+    public function favicon(string $url, array $attributes = [], $secure = null): HtmlString
     {
         $defaults = ['rel' => 'shortcut icon', 'type' => 'image/x-icon'];
 
@@ -150,7 +150,7 @@ class HtmlBuilder
      *
      * @return \Illuminate\Support\HtmlString
      */
-    public function link(string $url, ?string $title = null, array $attributes = [], $secure = null, bool $escape = true)
+    public function link(string $url, ?string $title = null, array $attributes = [], $secure = null, bool $escape = true): HtmlString
     {
         $url = $this->url->to($url, [], $secure);
 
@@ -407,7 +407,7 @@ class HtmlBuilder
      *
      * @return string
      */
-    protected function nestedListing(mixed $key, string $type, mixed $value)
+    protected function nestedListing(mixed $key, string $type, mixed $value): string
     {
         if (is_int($key)) {
             return $this->listing($type, $value);

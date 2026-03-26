@@ -94,7 +94,7 @@ trait FormAccessible
      *
      * @return mixed
      */
-    private function mutateFormAttribute(string $key, ?string $value)
+    private function mutateFormAttribute(string $key, ?string $value): mixed
     {
         return $this->{'form' . Str::studly($key) . 'Attribute'}($value);
     }

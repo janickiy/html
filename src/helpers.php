@@ -12,7 +12,7 @@ if (! function_exists('link_to')) {
      *
      * @return \Illuminate\Support\HtmlString
      */
-    function link_to(string $url, ?string $title = null, array $attributes = [], $secure = null, bool $escape = true)
+    function link_to(string $url, ?string $title = null, array $attributes = [], $secure = null, bool $escape = true): HtmlString
     {
         return app('html')->link($url, $title, $attributes, $secure, $escape);
     }
@@ -29,7 +29,7 @@ if (! function_exists('link_to_asset')) {
      *
      * @return \Illuminate\Support\HtmlString
      */
-    function link_to_asset(?string $url, ?string $title = null, array $attributes = [], $secure = null)
+    function link_to_asset(?string $url, ?string $title = null, array $attributes = [], $secure = null): HtmlString
     {
         return app('html')->linkAsset($url, $title, $attributes, $secure);
     }
@@ -63,7 +63,7 @@ if (! function_exists('link_to_action')) {
      *
      * @return \Illuminate\Support\HtmlString
      */
-    function link_to_action(string $action, ?string $title = null, array $parameters = [], array $attributes = [])
+    function link_to_action(string $action, ?string $title = null, array $parameters = [], array $attributes = []): HtmlString
     {
         return app('html')->linkAction($action, $title, $parameters, $attributes);
     }
