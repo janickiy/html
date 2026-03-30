@@ -14,7 +14,7 @@ trait Componentable
      *
      * @var array
      */
-    protected static $components = [];
+    protected static array $components = [];
 
     /**
      * Register a custom component.
@@ -25,7 +25,7 @@ trait Componentable
      *
      * @return void
      */
-    public static function component($name, $view, array $signature)
+    public static function component(string $name, string $view, array $signature): void
     {
         static::$components[$name] = compact('view', 'signature');
     }
@@ -37,7 +37,7 @@ trait Componentable
      *
      * @return bool
      */
-    public static function hasComponent($name)
+    public static function hasComponent(string $name): bool
     {
         return isset(static::$components[$name]);
     }
@@ -99,7 +99,7 @@ trait Componentable
      *
      * @throws \BadMethodCallException
      */
-    public function __call(string $method, array $parameters)
+    public function __call(string $method, array $parameters): mixed
     {
         if (static::hasComponent($method)) {
             return $this->renderComponent($method, $parameters);

@@ -1,5 +1,7 @@
 <?php
 
+use Illuminate\Support\HtmlString;
+
 if (! function_exists('link_to')) {
     /**
      * Generate a HTML link.
@@ -12,7 +14,7 @@ if (! function_exists('link_to')) {
      *
      * @return \Illuminate\Support\HtmlString
      */
-    function link_to(string $url, ?string $title = null, array $attributes = [], $secure = null, bool $escape = true): HtmlString
+    function link_to(string $url, ?string $title = null, array $attributes = [], ?bool $secure = null, bool $escape = true): HtmlString
     {
         return app('html')->link($url, $title, $attributes, $secure, $escape);
     }
@@ -29,7 +31,7 @@ if (! function_exists('link_to_asset')) {
      *
      * @return \Illuminate\Support\HtmlString
      */
-    function link_to_asset(?string $url, ?string $title = null, array $attributes = [], $secure = null): HtmlString
+    function link_to_asset(?string $url, ?string $title = null, array $attributes = [], ?bool $secure = null): HtmlString
     {
         return app('html')->linkAsset($url, $title, $attributes, $secure);
     }
@@ -46,7 +48,7 @@ if (! function_exists('link_to_route')) {
      *
      * @return \Illuminate\Support\HtmlString
      */
-    function link_to_route(string $name, ?string $title = null, array $parameters = [], array $attributes = [])
+    function link_to_route(string $name, ?string $title = null, array $parameters = [], array $attributes = []): HtmlString
     {
         return app('html')->linkRoute($name, $title, $parameters, $attributes);
     }

@@ -20,14 +20,14 @@ class HtmlBuilder
      *
      * @var \Illuminate\Contracts\Routing\UrlGenerator
      */
-    protected $url;
+    protected ?UrlGenerator $url;
 
     /**
      * The View Factory instance.
      *
      * @var \Illuminate\Contracts\View\Factory
      */
-    protected $view;
+    protected Factory $view;
 
     /**
      * Create a new HTML builder instance.
@@ -35,7 +35,7 @@ class HtmlBuilder
      * @param \Illuminate\Contracts\Routing\UrlGenerator $url
      * @param \Illuminate\Contracts\View\Factory $view
      */
-    public function __construct(UrlGenerator $url = null, Factory $view)
+    public function __construct(?UrlGenerator $url = null, Factory $view)
     {
         $this->url = $url;
         $this->view = $view;
@@ -74,7 +74,7 @@ class HtmlBuilder
      *
      * @return \Illuminate\Support\HtmlString
      */
-    public function script(string $url, array $attributes = [], $secure = null)
+    public function script(string $url, array $attributes = [], ?bool $secure = null): HtmlString
     {
         $attributes['src'] = $this->url->asset($url, $secure);
 
@@ -90,7 +90,7 @@ class HtmlBuilder
      *
      * @return \Illuminate\Support\HtmlString
      */
-    public function style(string $url, array $attributes = [], $secure = null): HtmlString
+    public function style(string $url, array $attributes = [], ?bool $secure = null): HtmlString
     {
         $defaults = ['media' => 'all', 'type' => 'text/css', 'rel' => 'stylesheet'];
 
@@ -111,7 +111,7 @@ class HtmlBuilder
      *
      * @return \Illuminate\Support\HtmlString
      */
-    public function image(string $url, ?string $alt = null, array $attributes = [], $secure = null): HtmlString
+    public function image(string $url, ?string $alt = null, array $attributes = [], ?bool $secure = null): HtmlString
     {
         $attributes['alt'] = $alt;
 
@@ -128,7 +128,7 @@ class HtmlBuilder
      *
      * @return \Illuminate\Support\HtmlString
      */
-    public function favicon(string $url, array $attributes = [], $secure = null): HtmlString
+    public function favicon(string $url, array $attributes = [], ?bool $secure = null): HtmlString
     {
         $defaults = ['rel' => 'shortcut icon', 'type' => 'image/x-icon'];
 
@@ -150,7 +150,7 @@ class HtmlBuilder
      *
      * @return \Illuminate\Support\HtmlString
      */
-    public function link(string $url, ?string $title = null, array $attributes = [], $secure = null, bool $escape = true): HtmlString
+    public function link(string $url, ?string $title = null, array $attributes = [], ?bool $secure = null, bool $escape = true): HtmlString
     {
         $url = $this->url->to($url, [], $secure);
 
@@ -175,7 +175,7 @@ class HtmlBuilder
      *
      * @return HtmlString
      */
-    public function secureLink(string $url, ?string $title = null, array $attributes = [], $escape = true): HtmlString
+    public function secureLink(string $url, ?string $title = null, array $attributes = [], bool $escape = true): HtmlString
     {
         return $this->link($url, $title, $attributes, true, $escape);
     }
@@ -191,7 +191,7 @@ class HtmlBuilder
      *
      * @return HtmlString
      */
-    public function linkAsset(string $url, ?string $title = null, array $attributes = [], $secure = null, bool $escape = true): HtmlString
+    public function linkAsset(string $url, ?string $title = null, array $attributes = [], ?bool $secure = null, bool $escape = true): HtmlString
     {
         $url = $this->url->asset($url, $secure);
 
@@ -225,7 +225,7 @@ class HtmlBuilder
      *
      * @return HtmlString
      */
-    public function linkRoute(string $name, ?string $title = null, array $parameters = [], array $attributes = [], $secure = null, bool $escape = true): HtmlString
+    public function linkRoute(string $name, ?string $title = null, array $parameters = [], array $attributes = [], ?bool $secure = null, bool $escape = true): HtmlString
     {
         return $this->link($this->url->route($name, $parameters), $title, $attributes, $secure, $escape);
     }
@@ -242,7 +242,7 @@ class HtmlBuilder
      *
      * @return \Illuminate\Support\HtmlString
      */
-    public function linkAction(string $action, ?string $title = null, array $parameters = [], array $attributes = [], $secure = null, bool $escape = true): HtmlString
+    public function linkAction(string $action, ?string $title = null, array $parameters = [], array $attributes = [], ?bool $secure = null, bool $escape = true): HtmlString
     {
         return $this->link($this->url->action($action, $parameters), $title, $attributes, $secure, $escape);
     }
@@ -304,7 +304,7 @@ class HtmlBuilder
      *
      * @return \Illuminate\Support\HtmlString|string
      */
-    public function ol(array $list, array $attributes = [])
+    public function ol(array $list, array $attributes = []): HtmlString|string
     {
         return $this->listing('ol', $list, $attributes);
     }
@@ -317,7 +317,7 @@ class HtmlBuilder
      *
      * @return \Illuminate\Support\HtmlString|string
      */
-    public function ul(array $list, array $attributes = [])
+    public function ul(array $list, array $attributes = []): HtmlString|string
     {
         return $this->listing('ul', $list, $attributes);
     }
@@ -360,7 +360,7 @@ class HtmlBuilder
      *
      * @return \Illuminate\Support\HtmlString|string
      */
-    protected function listing(string $type, array $list, array $attributes = [])
+    protected function listing(string $type, array $list, array $attributes = []): HtmlString|string
     {
         $html = '';
 
@@ -389,7 +389,7 @@ class HtmlBuilder
      *
      * @return string
      */
-    protected function listingElement(mixed $key, string $type, mixed $value)
+    protected function listingElement(mixed $key, string $type, mixed $value): string
     {
         if (is_array($value)) {
             return $this->nestedListing($key, $type, $value);
@@ -423,7 +423,7 @@ class HtmlBuilder
      *
      * @return string
      */
-    public function attributes($attributes): string
+    public function attributes(array $attributes = []): string
     {
         $html = [];
 
@@ -446,7 +446,7 @@ class HtmlBuilder
      * @param mixed $value
      * @return mixed|string|void
      */
-    protected function attributeElement(mixed $key, mixed $value)
+    protected function attributeElement(mixed $key, mixed $value): ?string
     {
         // For numeric keys we will assume that the value is a boolean attribute
         // where the presence of the attribute represents a true value and the
@@ -547,7 +547,7 @@ class HtmlBuilder
      *
      * @return \Illuminate\Support\HtmlString
      */
-    protected function toHtmlString($html): HtmlString
+    protected function toHtmlString(mixed $html): HtmlString
     {
         return new HtmlString($html);
     }
@@ -562,7 +562,7 @@ class HtmlBuilder
      *
      * @throws \BadMethodCallException
      */
-    public function __call($method, $parameters)
+    public function __call(string $method, array $parameters): mixed
     {
         if (static::hasComponent($method)) {
             return $this->componentCall($method, $parameters);

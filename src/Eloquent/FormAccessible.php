@@ -14,13 +14,13 @@ trait FormAccessible
      *
      * @var ReflectionClass
      */
-    protected $reflection;
+    protected ?ReflectionClass $reflection = null;
 
     /**
      * @param string $key
      * @return mixed
      */
-    public function getFormValue(mixed $key)
+    public function getFormValue(string $key): mixed
     {
         $value = $this->getAttributeFromArray($key);
 
@@ -66,7 +66,7 @@ trait FormAccessible
      * @param mixed $key
      * @return bool
      */
-    public function isNestedModel(mixed $key)
+    public function isNestedModel(string $key): bool
     {
         return in_array($key, array_keys($this->getRelations()));
     }
@@ -76,7 +76,7 @@ trait FormAccessible
      *
      * @return bool
      */
-    public function hasFormMutator(mixed $key): bool
+    public function hasFormMutator(string $key): bool
     {
         $methods = $this->getReflection()->getMethods(ReflectionMethod::IS_PUBLIC);
 
@@ -94,7 +94,7 @@ trait FormAccessible
      *
      * @return mixed
      */
-    private function mutateFormAttribute(string $key, ?string $value): mixed
+    private function mutateFormAttribute(string $key, mixed $value): mixed
     {
         return $this->{'form' . Str::studly($key) . 'Attribute'}($value);
     }
@@ -103,7 +103,7 @@ trait FormAccessible
      * Get a ReflectionClass Instance
      * @return ReflectionClass
      */
-    protected function getReflection()
+    protected function getReflection(): ReflectionClass
     {
         if (!$this->reflection) {
             $this->reflection = new ReflectionClass($this);
