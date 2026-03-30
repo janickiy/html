@@ -35,7 +35,7 @@ class HtmlBuilder
      * @param \Illuminate\Contracts\Routing\UrlGenerator $url
      * @param \Illuminate\Contracts\View\Factory $view
      */
-    public function __construct(?UrlGenerator $url = null, Factory $view)
+    public function __construct(UrlGenerator $url, Factory $view)
     {
         $this->url = $url;
         $this->view = $view;
@@ -454,21 +454,23 @@ class HtmlBuilder
         // This will convert HTML attributes such as "required" to a correct
         // form instead of using incorrect numerics.
         if (is_numeric($key)) {
-            return $value;
+            return $value === null ? null : (string) $value;
         }
 
-        // Treat boolean attributes as HTML properties
+        // Treat boolean attributes as HTML properties.
         if (is_bool($value) && $key !== 'value') {
-            return $value ? $key : '';
+            return $value ? $key : null;
         }
 
         if (is_array($value) && $key === 'class') {
             return 'class="' . implode(' ', $value) . '"';
         }
 
-        if (!is_null($value)) {
+        if ($value !== null) {
             return $key . '="' . e($value, false) . '"';
         }
+
+        return null;
     }
 
     /**

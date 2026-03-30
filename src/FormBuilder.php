@@ -76,6 +76,13 @@ class FormBuilder
      */
     protected array $labels = [];
 
+    /**
+     * Cached old input payload collections.
+     *
+     * @var array<string, \Illuminate\Support\Collection>
+     */
+    protected array $payload = [];
+
     protected ?Request $request;
 
     /**
@@ -216,6 +223,7 @@ class FormBuilder
     public function close(): HtmlString
     {
         $this->labels = [];
+        $this->payload = [];
 
         $this->model = null;
 
@@ -673,7 +681,7 @@ class FormBuilder
      *
      * @return \Illuminate\Support\HtmlString
      */
-    public function selectRange(?string $name, ?string $begin, ?string $end, mixed $selected = null, array $options = []): HtmlString
+    public function selectRange(?string $name, int|string $begin, int|string $end, mixed $selected = null, array $options = []): HtmlString
     {
         $range = array_combine($range = range($begin, $end), $range);
 
@@ -728,7 +736,7 @@ class FormBuilder
      *
      * @return \Illuminate\Support\HtmlString
      */
-    public function getSelectOption(mixed $display, ?string $value, mixed $selected, array $attributes = [], array $optgroupAttributes = []): HtmlString
+    public function getSelectOption(mixed $display, int|string|null $value, mixed $selected, array $attributes = [], array $optgroupAttributes = []): HtmlString
     {
         if (is_iterable($display)) {
             return $this->optionGroup($display, $value, $selected, $optgroupAttributes, $attributes);
@@ -749,7 +757,7 @@ class FormBuilder
      *
      * @return \Illuminate\Support\HtmlString
      */
-    protected function optionGroup(array $list, string $label, mixed $selected, array $attributes = [], array $optionsAttributes = [], int $level = 0): HtmlString
+    protected function optionGroup(array $list, int|string $label, mixed $selected, array $attributes = [], array $optionsAttributes = [], int $level = 0): HtmlString
     {
         $html = [];
         $space = str_repeat("&nbsp;", $level);
@@ -774,7 +782,7 @@ class FormBuilder
      *
      * @return \Illuminate\Support\
      */
-    protected function option(string $display, ?string $value, mixed $selected, array $attributes = []): HtmlString
+    protected function option(int|string|null $display, int|string|null $value, mixed $selected, array $attributes = []): HtmlString
     {
         $selected = $this->getSelectedValue($value, $selected);
 
@@ -816,7 +824,7 @@ class FormBuilder
      *
      * @return null|string
      */
-    protected function getSelectedValue(?string $value, mixed $selected): ?string
+    protected function getSelectedValue(int|string|null $value, mixed $selected): ?string
     {
         if (is_array($selected)) {
             return in_array($value, $selected, true) || in_array((string)$value, $selected, true) ? 'selected' : null;
@@ -824,7 +832,7 @@ class FormBuilder
             return $selected->contains($value) ? 'selected' : null;
         }
         if (is_int($value) && is_bool($selected)) {
-            return (bool)$value === $selected;
+            return ((bool) $value === $selected) ? 'selected' : null;
         }
         return ((string)$value === (string)$selected) ? 'selected' : null;
     }
@@ -897,7 +905,7 @@ class FormBuilder
      *
      * @return bool
      */
-    protected function getCheckedState(string $type, string $name, mixed $value, ?bool $checked): ?bool
+    protected function getCheckedState(string $type, ?string $name, mixed $value, ?bool $checked): ?bool
     {
         switch ($type) {
             case 'checkbox':
@@ -920,7 +928,7 @@ class FormBuilder
      *
      * @return bool
      */
-    protected function getCheckboxCheckedState(string $name, mixed $value, ?bool $checked): ?bool
+    protected function getCheckboxCheckedState(?string $name, mixed $value, ?bool $checked): ?bool
     {
         $request = $this->request($name);
 
@@ -935,7 +943,7 @@ class FormBuilder
         $posted = $this->getValueAttribute($name, $checked);
 
         if (is_array($posted)) {
-            return in_array($value, $posted);
+            return in_array($value, $posted, true);
         } elseif ($posted instanceof Collection) {
             return $posted->contains('id', $value);
         } else {
@@ -952,7 +960,7 @@ class FormBuilder
      *
      * @return bool
      */
-    protected function getRadioCheckedState(string $name, int|string|bool|null $value, ?bool $checked): ?bool
+    protected function getRadioCheckedState(?string $name, int|string|bool|null $value, ?bool $checked): ?bool
     {
         $request = $this->request($name);
 
@@ -972,7 +980,7 @@ class FormBuilder
      * @param string $value
      * @return bool
      */
-    protected function compareValues(string $name, mixed $value): bool
+    protected function compareValues(?string $name, mixed $value): bool
     {
         return $this->getValueAttribute($name) == $value;
     }
@@ -984,9 +992,13 @@ class FormBuilder
      *
      * @return bool
      */
-    protected function missingOldAndModel(string $name): bool
+    protected function missingOldAndModel(?string $name): bool
     {
-        return (is_null($this->old($name)) && is_null($this->getModelValueAttribute($name)));
+        if ($name === null) {
+            return true;
+        }
+
+        return is_null($this->old($name)) && is_null($this->getModelValueAttribute($name));
     }
 
     /**
@@ -1258,15 +1270,17 @@ class FormBuilder
      *
      * @return string
      */
-    public function getIdAttribute(?string $name, array $attributes): mixed
+    public function getIdAttribute(?string $name, array $attributes): ?string
     {
         if (array_key_exists('id', $attributes)) {
             return $attributes['id'];
         }
 
-        if (in_array($name, $this->labels)) {
+        if (in_array($name, $this->labels, true)) {
             return $name;
         }
+
+        return null;
     }
 
     /**
@@ -1279,7 +1293,7 @@ class FormBuilder
      */
     public function getValueAttribute(?string $name, mixed $value = null): mixed
     {
-        if (is_null($name)) {
+        if ($name === null) {
             return $value;
         }
 
@@ -1315,6 +1329,8 @@ class FormBuilder
         if (isset($this->model)) {
             return $this->getModelValueAttribute($name);
         }
+
+        return null;
     }
 
     /**
@@ -1331,13 +1347,13 @@ class FormBuilder
      * @param $name
      * @return array|null|string
      */
-    protected function request(string $name): mixed
+    protected function request(?string $name): mixed
     {
-        if (!$this->considerRequest) {
+        if (! $this->considerRequest) {
             return null;
         }
 
-        if (!isset($this->request)) {
+        if (! isset($this->request) || $name === null) {
             return null;
         }
 
@@ -1351,8 +1367,12 @@ class FormBuilder
      *
      * @return mixed
      */
-    protected function getModelValueAttribute(string $name): mixed
+    protected function getModelValueAttribute(?string $name): mixed
     {
+        if ($name === null) {
+            return null;
+        }
+
         $key = $this->transformKey($name);
 
         if ((is_string($this->model) || is_object($this->model)) && method_exists($this->model, 'getFormValue')) {
@@ -1369,29 +1389,30 @@ class FormBuilder
      *
      * @return mixed
      */
-    public function old(string $name): mixed
+    public function old(?string $name): mixed
     {
-        if (isset($this->session)) {
-            $key = $this->transformKey($name);
-            $payload = $this->session->getOldInput($key);
+        if (! isset($this->session) || $name === null) {
+            return null;
+        }
 
-            if (!is_array($payload)) {
-                return $payload;
-            }
+        $key = $this->transformKey($name);
+        $payload = $this->session->getOldInput($key);
 
-            if (!in_array($this->type, ['select', 'checkbox'])) {
-                if (!isset($this->payload[$key])) {
-                    $this->payload[$key] = collect($payload);
-                }
-
-                if (!empty($this->payload[$key])) {
-                    $value = $this->payload[$key]->shift();
-                    return $value;
-                }
-            }
-
+        if (! is_array($payload)) {
             return $payload;
         }
+
+        if (! in_array($this->type, ['select', 'checkbox'], true)) {
+            if (! isset($this->payload[$key])) {
+                $this->payload[$key] = collect($payload);
+            }
+
+            if (! empty($this->payload[$key])) {
+                return $this->payload[$key]->shift();
+            }
+        }
+
+        return $payload;
     }
 
     /**

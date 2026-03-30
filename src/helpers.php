@@ -31,7 +31,7 @@ if (! function_exists('link_to_asset')) {
      *
      * @return \Illuminate\Support\HtmlString
      */
-    function link_to_asset(?string $url, ?string $title = null, array $attributes = [], ?bool $secure = null): HtmlString
+    function link_to_asset(string $url, ?string $title = null, array $attributes = [], ?bool $secure = null): HtmlString
     {
         return app('html')->linkAsset($url, $title, $attributes, $secure);
     }
