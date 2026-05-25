@@ -81,7 +81,7 @@ trait FormAccessible
         $methods = $this->getReflection()->getMethods(ReflectionMethod::IS_PUBLIC);
 
         $mutator = collect($methods)
-            ->first(function (ReflectionMethod $method) use ($key) {
+            ->first(function (ReflectionMethod $method) use ($key): bool {
                 return $method->getName() === 'form' . Str::studly($key) . 'Attribute';
             });
 

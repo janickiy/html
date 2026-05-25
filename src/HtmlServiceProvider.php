@@ -2,6 +2,7 @@
 
 namespace Collective\Html;
 
+use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\Support\DeferrableProvider;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
@@ -41,7 +42,7 @@ class HtmlServiceProvider extends ServiceProvider implements DeferrableProvider
      */
     protected function registerHtmlBuilder(): void
     {
-        $this->app->singleton('html', function ($app) {
+        $this->app->singleton('html', function (Application $app): HtmlBuilder {
             return new HtmlBuilder($app['url'], $app['view']);
         });
     }
@@ -53,7 +54,7 @@ class HtmlServiceProvider extends ServiceProvider implements DeferrableProvider
      */
     protected function registerFormBuilder(): void
     {
-        $this->app->singleton('form', function ($app) {
+        $this->app->singleton('form', function (Application $app): FormBuilder {
             $form = new FormBuilder($app['html'], $app['url'], $app['view'], $app['session.store']->token(), $app['request']);
 
             return $form->setSessionStore($app['session.store']);
@@ -67,7 +68,7 @@ class HtmlServiceProvider extends ServiceProvider implements DeferrableProvider
      */
     protected function registerBladeDirectives(): void
     {
-        $this->app->afterResolving('blade.compiler', function (BladeCompiler $bladeCompiler) {
+        $this->app->afterResolving('blade.compiler', function (BladeCompiler $bladeCompiler): void {
             $namespaces = [
                 'Html' => get_class_methods(HtmlBuilder::class),
                 'Form' => get_class_methods(FormBuilder::class),
@@ -79,7 +80,9 @@ class HtmlServiceProvider extends ServiceProvider implements DeferrableProvider
                         $snakeMethod = Str::snake($method);
                         $directive = strtolower($namespace) . '_' . $snakeMethod;
 
-                        $bladeCompiler->directive($directive, function ($expression) use ($namespace, $method) {
+                        $bladeCompiler->directive($directive, function (?string $expression = null) use ($namespace, $method): string {
+                            $expression ??= '';
+
                             return "<?php echo $namespace::$method($expression); ?>";
                         });
                     }

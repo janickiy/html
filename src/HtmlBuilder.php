@@ -143,20 +143,22 @@ class HtmlBuilder
      * Generate a HTML link.
      *
      * @param string $url
-     * @param string $title
+     * @param string|bool|null $title
      * @param array $attributes
-     * @param bool $secure
+     * @param bool|null $secure
      * @param bool $escape
      *
      * @return \Illuminate\Support\HtmlString
      */
-    public function link(string $url, ?string $title = null, array $attributes = [], ?bool $secure = null, bool $escape = true): HtmlString
+    public function link(string $url, string|bool|null $title = null, array $attributes = [], ?bool $secure = null, bool $escape = true): HtmlString
     {
         $url = $this->url->to($url, [], $secure);
 
         if (is_null($title) || $title === false) {
             $title = $url;
         }
+
+        $title = (string) $title;
 
         if ($escape) {
             $title = $this->entities($title);
@@ -169,13 +171,13 @@ class HtmlBuilder
      * Generate a HTTPS HTML link.
      *
      * @param string $url
-     * @param string $title
+     * @param string|bool|null $title
      * @param array $attributes
      * @param bool $escape
      *
      * @return HtmlString
      */
-    public function secureLink(string $url, ?string $title = null, array $attributes = [], bool $escape = true): HtmlString
+    public function secureLink(string $url, string|bool|null $title = null, array $attributes = [], bool $escape = true): HtmlString
     {
         return $this->link($url, $title, $attributes, true, $escape);
     }
@@ -184,31 +186,31 @@ class HtmlBuilder
      * Generate a HTML link to an asset.
      *
      * @param string $url
-     * @param string $title
+     * @param string|bool|null $title
      * @param array $attributes
-     * @param bool $secure
+     * @param bool|null $secure
      * @param bool $escape
      *
      * @return HtmlString
      */
-    public function linkAsset(string $url, ?string $title = null, array $attributes = [], ?bool $secure = null, bool $escape = true): HtmlString
+    public function linkAsset(string $url, string|bool|null $title = null, array $attributes = [], ?bool $secure = null, bool $escape = true): HtmlString
     {
         $url = $this->url->asset($url, $secure);
 
-        return $this->link($url, $title ?: $url, $attributes, $secure, $escape);
+        return $this->link($url, $title, $attributes, $secure, $escape);
     }
 
     /**
      * Generate a HTTPS HTML link to an asset.
      *
      * @param string $url
-     * @param string $title
+     * @param string|bool|null $title
      * @param array $attributes
      * @param bool $escape
      *
      * @return \Illuminate\Support\HtmlString
      */
-    public function linkSecureAsset(string $url, ?string $title = null, array $attributes = [], bool $escape = true): HtmlString
+    public function linkSecureAsset(string $url, string|bool|null $title = null, array $attributes = [], bool $escape = true): HtmlString
     {
         return $this->linkAsset($url, $title, $attributes, true, $escape);
     }
@@ -217,15 +219,15 @@ class HtmlBuilder
      * Generate a HTML link to a named route.
      *
      * @param string $name
-     * @param string $title
+     * @param string|bool|null $title
      * @param array $parameters
      * @param array $attributes
-     * @param bool $secure
+     * @param bool|null $secure
      * @param bool $escape
      *
      * @return HtmlString
      */
-    public function linkRoute(string $name, ?string $title = null, array $parameters = [], array $attributes = [], ?bool $secure = null, bool $escape = true): HtmlString
+    public function linkRoute(string $name, string|bool|null $title = null, array $parameters = [], array $attributes = [], ?bool $secure = null, bool $escape = true): HtmlString
     {
         return $this->link($this->url->route($name, $parameters), $title, $attributes, $secure, $escape);
     }
@@ -234,15 +236,15 @@ class HtmlBuilder
      * Generate a HTML link to a controller action.
      *
      * @param string $action
-     * @param string $title
+     * @param string|bool|null $title
      * @param array $parameters
      * @param array $attributes
-     * @param bool $secure
+     * @param bool|null $secure
      * @param bool $escape
      *
      * @return \Illuminate\Support\HtmlString
      */
-    public function linkAction(string $action, ?string $title = null, array $parameters = [], array $attributes = [], ?bool $secure = null, bool $escape = true): HtmlString
+    public function linkAction(string $action, string|bool|null $title = null, array $parameters = [], array $attributes = [], ?bool $secure = null, bool $escape = true): HtmlString
     {
         return $this->link($this->url->action($action, $parameters), $title, $attributes, $secure, $escape);
     }
@@ -251,17 +253,17 @@ class HtmlBuilder
      * Generate a HTML link to an email address.
      *
      * @param string $email
-     * @param string $title
+     * @param string|bool|null $title
      * @param array $attributes
      * @param bool $escape
      *
      * @return \Illuminate\Support\HtmlString
      */
-    public function mailto(string $email, ?string $title = null, array $attributes = [], bool $escape = true): HtmlString
+    public function mailto(string $email, string|bool|null $title = null, array $attributes = [], bool $escape = true): HtmlString
     {
         $email = $this->email($email);
 
-        $title = $title ?: $email;
+        $title = ($title === null || $title === false) ? $email : (string) $title;
 
         if ($escape) {
             $title = $this->entities($title);

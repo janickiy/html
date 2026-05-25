@@ -10,6 +10,7 @@ use Illuminate\Contracts\View\Factory;
 use Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\HtmlString;
 use Illuminate\Support\Traits\Macroable;
@@ -245,7 +246,7 @@ class FormBuilder
     /**
      * Create a form label element.
      *
-     * @param string $name
+     * @param string|null $name
      * @param string|null $value
      * @param array $options
      * @param bool $escape_html
@@ -269,21 +270,21 @@ class FormBuilder
     /**
      * Format the label value.
      *
-     * @param string $name
+     * @param string|null $name
      * @param string|null $value
      * @return string
      */
     protected function formatLabel(?string $name, ?string $value): string
     {
-        return $value ?: ucwords(str_replace('_', ' ', $name));
+        return $value ?: ucwords(str_replace('_', ' ', (string) $name));
     }
 
     /**
      * Create a form input field
      *
-     * @param string $type
-     * @param string $name
-     * @param string|null $value
+     * @param string|null $type
+     * @param string|null $name
+     * @param mixed $value
      * @param array $options
      * @return HtmlString
      */
@@ -451,7 +452,7 @@ class FormBuilder
     public function datetime(?string $name, string|DateTimeInterface|null $value = null, array $options = []): HtmlString
     {
         if ($value instanceof DateTimeInterface) {
-            $value = $value->format(DateTime::RFC3339);
+            $value = $value->format(DateTimeInterface::RFC3339);
         }
 
         return $this->input('datetime', $name, $value, $options);
@@ -673,10 +674,10 @@ class FormBuilder
     /**
      * Create a select range field.
      *
-     * @param string $name
-     * @param string $begin
-     * @param string $end
-     * @param string $selected
+     * @param string|null $name
+     * @param int|string $begin
+     * @param int|string $end
+     * @param mixed $selected
      * @param array $options
      *
      * @return \Illuminate\Support\HtmlString
@@ -691,38 +692,78 @@ class FormBuilder
     /**
      * Create a select year field.
      *
-     * @param string $name
-     * @param string $begin
-     * @param string $end
-     * @param string $selected
+     * @param string|null $name
+     * @param int|string $begin
+     * @param int|string $end
+     * @param mixed $selected
      * @param array $options
      *
-     * @return mixed
+     * @return \Illuminate\Support\HtmlString
      */
-    public function selectYear(): mixed
+    public function selectYear(?string $name, int|string $begin, int|string $end, mixed $selected = null, array $options = []): HtmlString
     {
-        return call_user_func_array([$this, 'selectRange'], func_get_args());
+        return $this->selectRange($name, $begin, $end, $selected, $options);
     }
 
     /**
      * Create a select month field.
      *
-     * @param string $name
-     * @param string $selected
+     * @param string|null $name
+     * @param mixed $selected
      * @param array $options
      * @param string $format
      *
      * @return \Illuminate\Support\HtmlString
      */
-    public function selectMonth(?string $name, ?string $selected = null, array $options = [], string $format = '%B'): HtmlString
+    public function selectMonth(?string $name, mixed $selected = null, array $options = [], string $format = '%B'): HtmlString
     {
         $months = [];
 
         foreach (range(1, 12) as $month) {
-            $months[$month] = strftime($format, mktime(0, 0, 0, $month, 1));
+            $months[$month] = $this->formatMonth($month, $format);
         }
 
         return $this->select($name, $months, $selected, $options);
+    }
+
+    /**
+     * Format the display value for a month option.
+     *
+     * @param int $month
+     * @param string $format
+     *
+     * @return string
+     */
+    protected function formatMonth(int $month, string $format): string
+    {
+        return Carbon::createFromDate(2000, $month, 1)
+            ->translatedFormat($this->convertStrftimeFormat($format));
+    }
+
+    /**
+     * Convert the legacy strftime month format to a PHP date format.
+     *
+     * @param string $format
+     *
+     * @return string
+     */
+    protected function convertStrftimeFormat(string $format): string
+    {
+        return strtr($format, [
+            '%%' => '%',
+            '%-d' => 'j',
+            '%-m' => 'n',
+            '%A' => 'l',
+            '%a' => 'D',
+            '%B' => 'F',
+            '%b' => 'M',
+            '%d' => 'd',
+            '%e' => 'j',
+            '%h' => 'M',
+            '%m' => 'm',
+            '%Y' => 'Y',
+            '%y' => 'y',
+        ]);
     }
 
     /**
@@ -840,7 +881,7 @@ class FormBuilder
     /**
      * Create a checkbox input field.
      *
-     * @param string $name
+     * @param string|null $name
      * @param mixed $value
      * @param bool $checked
      * @param array $options
@@ -976,8 +1017,8 @@ class FormBuilder
      * Use loose comparison because Laravel model casting may be in affect and therefore
      * 1 == true and 0 == false.
      *
-     * @param string $name
-     * @param string $value
+     * @param string|null $name
+     * @param mixed $value
      * @return bool
      */
     protected function compareValues(?string $name, mixed $value): bool
@@ -988,7 +1029,7 @@ class FormBuilder
     /**
      * Determine if old input or model input exists for a key.
      *
-     * @param string $name
+     * @param string|null $name
      *
      * @return bool
      */
@@ -1033,13 +1074,13 @@ class FormBuilder
     /**
      * Create a month input field.
      *
-     * @param string $name
-     * @param string $value
+     * @param string|null $name
+     * @param string|\DateTimeInterface|null $value
      * @param array $options
      *
      * @return \Illuminate\Support\HtmlString
      */
-    public function month(string $name, string|DateTimeInterface|null $value = null, array $options = []): HtmlString
+    public function month(?string $name, string|DateTimeInterface|null $value = null, array $options = []): HtmlString
     {
         if ($value instanceof DateTimeInterface) {
             $value = $value->format('Y-m');
@@ -1051,13 +1092,13 @@ class FormBuilder
     /**
      * Create a color input field.
      *
-     * @param string $name
-     * @param string $value
+     * @param string|null $name
+     * @param string|null $value
      * @param array $options
      *
      * @return \Illuminate\Support\HtmlString
      */
-    public function color(string $name, ?string $value = null, array $options = []): HtmlString
+    public function color(?string $name, ?string $value = null, array $options = []): HtmlString
     {
         return $this->input('color', $name, $value, $options);
     }
@@ -1203,7 +1244,7 @@ class FormBuilder
      *
      * @return string
      */
-    protected function getRouteAction(mixed $options): string
+    protected function getRouteAction(array|string $options): string
     {
         if (is_array($options)) {
             $parameters = array_slice($options, 1);
@@ -1225,7 +1266,7 @@ class FormBuilder
      *
      * @return string
      */
-    protected function getControllerAction(mixed $options): string
+    protected function getControllerAction(array|string $options): string
     {
         if (is_array($options)) {
             return $this->url->action($options[0], array_slice($options, 1));
